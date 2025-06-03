@@ -4,7 +4,7 @@ This document defines a data type for fixed-length, null-terminated Unicode stri
 
 "Fixed length" as used here means that the `fixed_length_utf32` data type is parametrized by a integral length, which sets a fixed length for every scalar belonging to that data type.
 
-"Null-terminated" as used here means that, for an integral length `L`, a `fixed_length_utf32` data type parameterized with `L` can represent a string shorter than `L` by adding null bytes to the end of that string until it has length `L`. 
+"Null-terminated" as used here means that, for an integral length `L`, a `fixed_length_utf32` data type parameterized with length `L` can represent a string shorter than `L` by adding null bytes to the end of that string until it has length `L`. 
 
 ### Name
 

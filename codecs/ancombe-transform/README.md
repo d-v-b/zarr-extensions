@@ -10,7 +10,7 @@ This transformation is useful in sensing applications to mitigate [shot noise](h
 
 #### Encoding
 
-In addition to the input data (an array), the encoding procedure requires the following parameters:
+In addition to the input data (an array), the encoding procedure takes the following parameters:
 
 | name | type | 
 | - | - | 
@@ -18,7 +18,29 @@ In addition to the input data (an array), the encoding procedure requires the fo
 | `zero_level` | real number |
 | `beta` | real number from the inverval `(0, 1]` |
 
-For each element `i` of the input array, an output value `o` is generated via the following procedure:
+For each element `x` of the input array, an output value `y` is generated via the following procedure:
+
+```python
+def anscombe_transform(x, conversion_gain, zero_level, beta):
+    # Convert to event-rate units
+    event_rate = (x - zero_level) / sensitivity
+
+    zero_slope = 1.0 / (beta * math.sqrt(3.0 / 8.0))
+    offset = zero_level * zero_slope / sensitivity
+
+    if value < 0:
+        # Linear extrapolation for negative photon rates
+        result = offset + value * zero_slope
+    else:
+        # Anscombe variance-stabilizing transform
+        result = offset + (2.0 / beta) * (np.sqrt(value + 3.0 / 8.0) - np.sqrt(3.0 / 8.0))
+    y[it.multi_index] = result
+    it.iternext()
+
+return y
+
+```
+
 
 
 #### Decoding

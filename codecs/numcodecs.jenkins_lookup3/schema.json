@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "const": "numcodecs.jenkins_lookup3"
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "jenkins_lookup3"
+        },
+        "initval": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "prefix": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": { "const": "numcodecs.delta" },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": { "const": "delta" },
+        "dtype": { "$ref": "#/$defs/data_type" },
+        "astype": { "$ref": "#/$defs/data_type" }
+      },
+      "required": ["dtype"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false,
+  "$defs": {
+    "data_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float32",
+            "float64"
+          ]
+        },
+        { "type": "string", "pattern": "^[<>|=]?([iu][1248]|f[248])$" }
+      ]
+    }
+  }
+}

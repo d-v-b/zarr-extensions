@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": { "const": "numcodecs.astype" },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": { "const": "astype" },
+        "encode_dtype": { "$ref": "#/$defs/data_type" },
+        "decode_dtype": { "$ref": "#/$defs/data_type" }
+      },
+      "required": ["encode_dtype"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false,
+  "$defs": {
+    "data_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128"
+          ]
+        },
+        {
+          "type": "string",
+          "pattern": "^[<>|=]?(b1|[iu][1248]|f[248]|c(8|16))$"
+        }
+      ]
+    }
+  }
+}

@@ -38,7 +38,7 @@ permitted.
 | `clevel`    | integer | no       | `5`     | 0 to 9. Affects encoding only.                                |
 | `shuffle`   | integer | no       | `1`     | `-1`, `0`, `1` or `2`. Affects encoding only.                 |
 | `blocksize` | integer | no       | `0`     | ≥ 0. Affects encoding only.                                   |
-| `typesize`  | integer | no       | `1`     | ≥ 1. Affects encoding only. Requires numcodecs ≥ 0.16.        |
+| `typesize`  | integer | no       | see below | ≥ 1. Affects encoding only. Requires numcodecs ≥ 0.16.      |
 
 The chunk header records every parameter the decoder needs. Decoding therefore
 never uses the configuration: a decoder must decode any valid Blosc chunk
@@ -60,13 +60,20 @@ compression (see [memcpyed chunks](#memcpyed-chunks)).
 The element size in bytes, `T`, used by the shuffle filters and stored in the
 chunk header.
 
-**Default.** If `typesize` is omitted, `T` is **1**. zarr-python passes the
-encoder a buffer of bytes (`uint8`), and numcodecs uses that buffer's item
-size. The array's data type is not taken into account. This differs from Zarr
-V2 and from the [`blosc`](../blosc/README.md) codec, where `T` usually equals
-the element size of the array's data type. If `T` is 1, byte-shuffle has no
-effect. The chunk header field holds values from 1 to 255. If `typesize` is
-greater than 255, c-blosc stores and uses `T = 1`.
+**Default.** If `typesize` is omitted, `T` is the item size in bytes of the
+data type that the array-to-bytes codec encodes (the array's data type after
+any array-to-array codecs), provided that data type has a fixed item size and
+the input length is a whole multiple of it. Otherwise `T` is 1. This matches
+Zarr V2, where numcodecs received a typed array, and the
+[`blosc`](../blosc/README.md) codec, where `T` usually equals the element size.
+
+zarr-python 3.4 and earlier passed the encoder a buffer of bytes (`uint8`) and
+so used `T = 1` whenever `typesize` was omitted. Chunks written that way are
+valid: the header records `T`, and decoders never use the configuration.
+
+If `T` is 1, byte-shuffle has no effect. The chunk header field holds values
+from 1 to 255. If `typesize` is greater than 255, c-blosc stores and uses
+`T = 1`.
 
 ### `shuffle`
 
@@ -77,8 +84,8 @@ greater than 255, c-blosc stores and uses `T = 1`.
 | `1`   | byte-shuffle                                                    |
 | `2`   | bit-shuffle                                                     |
 
-`T` is the effective type size described above. With zarr-python, `-1`
-therefore means bit-shuffle unless `typesize` is set to a value from 2 to 255.
+`T` is the effective type size described above, so `-1` means bit-shuffle
+for single-byte data types and byte-shuffle otherwise.
 
 ### `blocksize`
 
@@ -211,23 +218,24 @@ bytes for the same input.
 
 ### Worked example
 
-zarr-python with the default configuration (`{}`) encodes the 16-byte input
-`00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00` (the `uint16` values 0 to 7 in
+With the default configuration (`{}`), a `uint16` array encodes the 16-byte
+input `00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00` (the values 0 to 7 in
 little-endian order) as this 32-byte memcpyed chunk:
 
 ```
 02                    version
 01                    versionlz
 33                    flags: byte-shuffle | memcpyed | don't split | compressor 1 (lz4)
-01                    typesize T = 1 (the default; not the item size of uint16)
+02                    typesize T = 2 (the default: the item size of uint16)
 10 00 00 00           nbytes = 16
 10 00 00 00           blocksize = 16
 20 00 00 00           cbytes = 32
 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00
 ```
 
-With `{"cname": "zstd", "clevel": 3, "shuffle": -1}`, the flags byte is `96`:
-bit-shuffle (because `T` is 1), memcpyed, don't split, and compressor 4 (zstd).
+With `{"cname": "zstd", "clevel": 3, "shuffle": -1}`, the flags byte is `93`:
+byte-shuffle (because `T` is 2), memcpyed, don't split, and compressor 4 (zstd).
+zarr-python 3.4 wrote `T = 1` here, with flags `33` and `96` respectively.
 
 ## Example
 
@@ -262,14 +270,13 @@ The configurations differ as follows:
 | -------------------------------------------------- | ------------------------------------------------------- |
 | all fields optional                                | `cname`, `clevel`, `shuffle`, `blocksize` required      |
 | `shuffle` is an integer: `-1`, `0`, `1`, `2`       | `shuffle` is `"noshuffle"`, `"shuffle"`, `"bitshuffle"` |
-| `typesize` optional, default 1                     | `typesize` required unless `shuffle` is `"noshuffle"`   |
+| `typesize` optional, default the item size         | `typesize` required unless `shuffle` is `"noshuffle"`   |
 
 An array's metadata can be rewritten from `numcodecs.blosc` to `blosc` without
-re-encoding any chunks. To keep future writes identical to past ones, use the
-effective values, not the array's data type:
+re-encoding any chunks, using the effective values:
 
 ```
-T        = C.typesize if present (and <= 255), else 1
+T        = C.typesize if present (and <= 255), else the default described above
 shuffle  = { -1: ("bitshuffle" if T == 1 else "shuffle"),
               0: "noshuffle", 1: "shuffle", 2: "bitshuffle" }[C.shuffle if present, else 1]
 {"name": "numcodecs.blosc", "configuration": C}
@@ -281,10 +288,8 @@ shuffle  = { -1: ("bitshuffle" if T == 1 else "shuffle"),
 (Here `C.clevel or 5` means `C.clevel` if present, else 5. An explicit `0` is
 kept.)
 
-This mapping differs from the one zarr-python uses to migrate Zarr V2 arrays
-(`zarr migrate v3`, which resolves `-1` from the array's item size). In Zarr V2,
-numcodecs received a typed array, so `T` was the item size. With
-`numcodecs.blosc` in Zarr V3, it receives bytes.
+This is the same rule zarr-python uses to migrate Zarr V2 arrays
+(`zarr migrate v3`, which resolves `-1` from the array's item size).
 
 Writers should prefer `blosc` for new data and set `typesize` to the element
 size of the data being shuffled.

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": { "const": "numcodecs.zfpy" },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": { "const": "zfpy" },
+        "mode": { "type": "integer", "enum": [2, 3, 4, 5] },
+        "tolerance": { "type": "number" },
+        "rate": { "type": "number" },
+        "precision": { "type": "integer" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false
+}

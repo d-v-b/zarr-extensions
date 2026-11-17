@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "const": "numcodecs.lz4"
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "lz4"
+        },
+        "acceleration": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false
+}

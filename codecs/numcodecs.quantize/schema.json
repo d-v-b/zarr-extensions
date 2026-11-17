@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": { "const": "numcodecs.quantize" },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": { "const": "quantize" },
+        "digits": { "type": "integer", "minimum": -308, "maximum": 307 },
+        "dtype": { "$ref": "#/$defs/data_type" },
+        "astype": { "$ref": "#/$defs/data_type" }
+      },
+      "required": ["digits"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false,
+  "$defs": {
+    "data_type": {
+      "anyOf": [
+        { "enum": ["float16", "float32", "float64"] },
+        { "type": "string", "pattern": "^[<>|=]?f[248]$" }
+      ]
+    }
+  }
+}

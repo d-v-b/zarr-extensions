@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": { "const": "numcodecs.bitround" },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": { "const": "bitround" },
+        "keepbits": { "type": "integer", "minimum": 0, "maximum": 52 }
+      },
+      "required": ["keepbits"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false
+}

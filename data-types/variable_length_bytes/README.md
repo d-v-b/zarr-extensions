@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [bytes]
+---
+
 # Variable-length bytes data type (alias of `bytes`)
 
 Defines `variable_length_bytes`, an alternative name for the

@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [packbits]
+---
+
 # numcodecs.packbits codec
 
 Defines an `array -> array` codec that packs a `bool` array into a

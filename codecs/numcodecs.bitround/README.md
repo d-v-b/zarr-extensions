@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [bitround]
+---
+
 # numcodecs.bitround codec
 
 Defines an `array -> array` codec that rounds the significand (mantissa) of

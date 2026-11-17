@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [zfp]
+---
+
 # numcodecs.zfpy codec
 
 Defines an `array -> bytes` codec that compresses a chunk with the [zfp]

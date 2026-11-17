@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [blosc]
+---
+
 # numcodecs.blosc codec
 
 Defines a `bytes -> bytes` codec that compresses its input with the Blosc

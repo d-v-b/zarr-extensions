@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [gzip]
+---
+
 # numcodecs.gzip codec
 
 Defines a `bytes -> bytes` codec that compresses its input with DEFLATE

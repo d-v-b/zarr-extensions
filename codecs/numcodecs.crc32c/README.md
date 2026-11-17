@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [crc32c]
+---
+
 # numcodecs.crc32c codec
 
 Defines a `bytes -> bytes` codec that stores a 32-bit CRC-32C (Castagnoli)

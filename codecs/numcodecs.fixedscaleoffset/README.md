@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [scale_offset, cast_value]
+---
+
 # numcodecs.fixedscaleoffset codec
 
 Defines an `array -> array` codec that maps each element `x` to

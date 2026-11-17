@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [bytes]
+---
+
 # endian codec (legacy name of `bytes`)
 
 Defines `endian`, the name that drafts of the Zarr V3 specification gave to the

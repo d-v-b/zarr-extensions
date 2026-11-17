@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [zstd]
+---
+
 # numcodecs.zstd codec
 
 Defines a `bytes -> bytes` codec that compresses its input with

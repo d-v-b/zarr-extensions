@@ -1,3 +1,8 @@
+---
+status: superseded
+superseded_by: [cast_value]
+---
+
 # numcodecs.astype codec
 
 Defines an `array -> array` codec that converts each element to another data

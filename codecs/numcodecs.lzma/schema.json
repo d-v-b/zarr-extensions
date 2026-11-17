@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "const": "numcodecs.lzma"
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "lzma"
+        },
+        "format": {
+          "type": "integer",
+          "enum": [0, 1, 2, 3]
+        },
+        "check": {
+          "type": "integer",
+          "enum": [-1, 0, 1, 4, 10]
+        },
+        "preset": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9
+                },
+                {
+                  "type": "integer",
+                  "minimum": 2147483648,
+                  "maximum": 2147483657
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "enum": [4611686018427387905, 33, 3, 4, 5, 6, 7, 8, 9]
+                  },
+                  "preset": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "dict_size": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "lc": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4
+                  },
+                  "lp": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4
+                  },
+                  "pb": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4
+                  },
+                  "mode": {
+                    "type": "integer",
+                    "enum": [1, 2]
+                  },
+                  "nice_len": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "mf": {
+                    "type": "integer",
+                    "enum": [3, 4, 18, 19, 20]
+                  },
+                  "depth": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "dist": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "start_offset": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": ["id"],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": ["filters"],
+            "properties": {
+              "filters": {
+                "type": "array"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "preset": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["format"],
+            "properties": {
+              "format": {
+                "const": 3
+              }
+            }
+          },
+          "then": {
+            "required": ["filters"],
+            "properties": {
+              "filters": {
+                "type": "array"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["format"],
+            "properties": {
+              "format": {
+                "enum": [2, 3]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "check": {
+                "enum": [-1, 0]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false
+}

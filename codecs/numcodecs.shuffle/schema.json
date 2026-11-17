@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "const": "numcodecs.shuffle"
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "shuffle"
+        },
+        "elementsize": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "configuration"],
+  "additionalProperties": false
+}
